@@ -11,6 +11,7 @@ public interface StudentService {
 
     /**
      * method to save a student entity
+     *
      * @param studentRequestModel
      * @return
      */
@@ -18,6 +19,7 @@ public interface StudentService {
 
     /**
      * method to delete a student entity
+     *
      * @param rollNo
      * @param branch
      * @return
@@ -26,6 +28,7 @@ public interface StudentService {
 
     /**
      * method to retrieve a student corresponding to provided rollNo and branch
+     *
      * @param rollNo
      * @param branch
      * @return
@@ -34,7 +37,16 @@ public interface StudentService {
 
     /**
      * method to retrieve list of students
+     *
      * @return
      */
     ResponseModel<List<StudentResponseModel>> getStudents();
+
+    /**
+     * method to update an existing student entity
+     *
+     * @param studentRequestModel
+     * @return
+     */
+    ResponseModel<StudentResponseModel> updateStudent(StudentRequestModel studentRequestModel);
 }

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.requestModel.StudentRequestModel;
 import com.example.demo.responseModel.ResponseModel;
+import com.example.demo.responseModel.StudentResponseModel;
 import com.example.demo.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,8 +54,14 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public ResponseEntity<ResponseModel<?>> getStudents(){
+    public ResponseEntity<ResponseModel<?>> getStudents() {
         ResponseModel<?> responseModel = studentService.getStudents();
+        return new ResponseEntity<>(responseModel, HttpStatus.valueOf(responseModel.getStatus()));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseModel<?>> updateStudent(@Valid @RequestBody StudentRequestModel studentRequestModel) {
+        ResponseModel<StudentResponseModel> responseModel = studentService.updateStudent(studentRequestModel);
         return new ResponseEntity<>(responseModel, HttpStatus.valueOf(responseModel.getStatus()));
     }
 }
