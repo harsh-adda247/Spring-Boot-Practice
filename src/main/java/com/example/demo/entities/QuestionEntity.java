@@ -4,26 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity
-@Table(name = "exams")
-public class ExamEntity {
+@Table(name = "questions")
+public class QuestionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
     private Integer examId;
 
-    private String startDate;
+    private String question;
 
-    private String endDate;
+    private String option1, option2, option3, option4;
+
+    private String answer;
 }

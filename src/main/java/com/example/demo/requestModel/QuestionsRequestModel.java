@@ -1,15 +1,26 @@
 package com.example.demo.requestModel;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
-import java.util.Map;
+import com.example.demo.validation.ValidOptions;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import javax.validation.constraints.*;
+import java.util.Map;
+import java.util.Set;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class QuestionsRequestModel {
 
     @Null(message = "id not allowed")
     private Integer id;
+
+    @NotNull(message = "exam id can't be missing or empty")
+    private Integer examId;
 
     @NotBlank(message = "question can't be missing or empty")
     private String question;
@@ -17,36 +28,16 @@ public class QuestionsRequestModel {
     @NotBlank(message = "options can't be missing or empty")
     @Max(value = 4)
     @Min(value = 4)
+    @ValidOptions
     private Map<String, Boolean> options;
 
-    public Integer getId() {
-        return id;
-    }
+    @Null(message = "answer isn't allowed")
+    private String answer;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public Map<String, Boolean> getOptions() {
-        return options;
-    }
-
-    public void setOptions(Map<String, Boolean> options) {
-        this.options = options;
-    }
-
-    @Override
-    public String toString() {
-        return "ExamRequestModel{" +
-                "question='" + question + '\'' +
-                ", options=" + options + '}';
+    public void identifyAnswer() {
+        Set<Map.Entry<String, Boolean>> entrySet = this.options.entrySet();
+        for(Map.Entry<String, Boolean> entry: entrySet){
+            if(entry.getValue() == true) this.answer = entry.getKey(); break;
+        }
     }
 }
