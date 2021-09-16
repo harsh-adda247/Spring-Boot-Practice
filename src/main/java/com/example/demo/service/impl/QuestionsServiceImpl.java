@@ -33,31 +33,33 @@ public class QuestionsServiceImpl implements QuestionsService {
         logger.info("**** Inside QuestionServiceImpl ==> saveQuestion ****");
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setQuestion(questionsRequestModel.getQuestion());
-        generateOptions(questionsRequestModel);
+        list = generateOptions(questionsRequestModel);
         questionEntity.setOption1(list.get(0));
-        questionEntity.setOption1(list.get(1));
-        questionEntity.setOption1(list.get(2));
-        questionEntity.setOption1(list.get(3));
+        questionEntity.setOption2(list.get(1));
+        questionEntity.setOption3(list.get(2));
+        questionEntity.setOption4(list.get(3));
         questionEntity.setExamId(questionsRequestModel.getExamId());
         questionEntity.setAnswer(questionsRequestModel.getAnswer());
 
         questionEntity = questionRepository.save(questionEntity);
         logger.info("question saved successfully");
-        QuestionResponseModel response = prepareQuestionResponse(questionEntity.getQuestion(), list);
+        QuestionResponseModel response = prepareQuestionResponse(questionEntity.getQuestion(), questionEntity.getAnswer(), list);
         return new ResponseModel<QuestionResponseModel>(HttpStatus.OK, "Question saved successfully", null, response);
     }
 
-    private void generateOptions(QuestionsRequestModel questionsRequestModel){
+    private List<String> generateOptions(QuestionsRequestModel questionsRequestModel) {
         Set<Map.Entry<String, Boolean>> entrySet = questionsRequestModel.getOptions().entrySet();
-        for(Map.Entry<String, Boolean> map: entrySet){
-            this.list.add(map.getKey());
+        for (Map.Entry<String, Boolean> map : entrySet) {
+            list.add(map.getKey());
         }
+        return list;
     }
 
-    private QuestionResponseModel prepareQuestionResponse(String question, List<String> options){
+    private QuestionResponseModel prepareQuestionResponse(String question, String answer, List<String> options) {
         QuestionResponseModel questionResponseModel = new QuestionResponseModel();
         questionResponseModel.setQuestionl(question);
         questionResponseModel.setOptions(options);
+        questionResponseModel.setAnswer(answer);
         return questionResponseModel;
     }
 }

@@ -16,4 +16,6 @@ public class QuestionResponseModel {
     private String questionl;
 
     private List<String> options;
+
+    private String answer;
 }

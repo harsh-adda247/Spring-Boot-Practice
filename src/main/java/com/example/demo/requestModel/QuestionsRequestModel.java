@@ -25,19 +25,20 @@ public class QuestionsRequestModel {
     @NotBlank(message = "question can't be missing or empty")
     private String question;
 
-    @NotBlank(message = "options can't be missing or empty")
-    @Max(value = 4)
-    @Min(value = 4)
     @ValidOptions
     private Map<String, Boolean> options;
 
     @Null(message = "answer isn't allowed")
     private String answer;
 
-    public void identifyAnswer() {
-        Set<Map.Entry<String, Boolean>> entrySet = this.options.entrySet();
+    public QuestionsRequestModel identifyAnswer(QuestionsRequestModel questionsRequestModel) {
+        Set<Map.Entry<String, Boolean>> entrySet = questionsRequestModel.getOptions().entrySet();
         for(Map.Entry<String, Boolean> entry: entrySet){
-            if(entry.getValue() == true) this.answer = entry.getKey(); break;
+            if(entry.getValue() == true) {
+                questionsRequestModel.setAnswer(entry.getKey());
+                break;
+            }
         }
+        return questionsRequestModel;
     }
 }

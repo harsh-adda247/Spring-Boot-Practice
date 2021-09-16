@@ -8,6 +8,7 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "exams")
-public class ExamEntity {
+public class ExamEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

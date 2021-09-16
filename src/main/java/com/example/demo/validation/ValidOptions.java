@@ -5,12 +5,12 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.TYPE_USE })
 @Constraint(validatedBy = OptionsValidator.class)
+@Target( { ElementType.METHOD, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ValidOptions {
 
-    String message() default "{Invalid options}";
+    String message() default "Invalid options - options in total must be 4 and one of them should be the answer";
 
     Class<?>[] groups() default {};
 

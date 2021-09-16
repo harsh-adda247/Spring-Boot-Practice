@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/question")
 public class QuestionsController {
@@ -20,8 +22,8 @@ public class QuestionsController {
     private QuestionsService questionsService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseModel<?>> createQuestion(@RequestBody QuestionsRequestModel question){
-       question.identifyAnswer();
+    public ResponseEntity<ResponseModel<?>> createQuestion(@Valid @RequestBody QuestionsRequestModel question){
+       question = question.identifyAnswer(question);
        ResponseModel<QuestionResponseModel> questionResponse = questionsService.saveQuestion(question);
        return new ResponseEntity<>(questionResponse, HttpStatus.valueOf(questionResponse.getStatus()));
     }
