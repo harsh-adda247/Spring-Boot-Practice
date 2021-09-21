@@ -24,16 +24,15 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    private List<String> list = new ArrayList<>();
-
     private static Logger logger = LoggerFactory.getLogger(QuestionsServiceImpl.class);
 
     @Override
     public ResponseModel<QuestionResponseModel> saveQuestion(QuestionsRequestModel questionsRequestModel) {
         logger.info("**** Inside QuestionServiceImpl ==> saveQuestion ****");
+        List<String> list = new ArrayList<>();
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setQuestion(questionsRequestModel.getQuestion());
-        list = generateOptions(questionsRequestModel);
+        list = generateOptions(questionsRequestModel, list);
         questionEntity.setOption1(list.get(0));
         questionEntity.setOption2(list.get(1));
         questionEntity.setOption3(list.get(2));
@@ -47,7 +46,19 @@ public class QuestionsServiceImpl implements QuestionsService {
         return new ResponseModel<QuestionResponseModel>(HttpStatus.OK, "Question saved successfully", null, response);
     }
 
-    private List<String> generateOptions(QuestionsRequestModel questionsRequestModel) {
+    @Override
+    public ResponseModel<List<QuestionResponseModel>> saveQuestions(List<QuestionsRequestModel> questionsRequestModels) {
+        logger.info("**** Inside QuestionServiceImpl ==> saveQuestions() ****");
+        List<QuestionResponseModel> questionsResponses = new ArrayList<>();
+        for (QuestionsRequestModel question : questionsRequestModels) {
+            ResponseModel<QuestionResponseModel> responseModel = saveQuestion(question);
+            questionsResponses.add(responseModel.getResponse());
+        }
+        logger.info("list of questions saved successfully");
+        return new ResponseModel<List<QuestionResponseModel>>(HttpStatus.OK, "Questions saved successfully", null, questionsResponses);
+    }
+
+    private List<String> generateOptions(QuestionsRequestModel questionsRequestModel, List<String> list) {
         Set<Map.Entry<String, Boolean>> entrySet = questionsRequestModel.getOptions().entrySet();
         for (Map.Entry<String, Boolean> map : entrySet) {
             list.add(map.getKey());

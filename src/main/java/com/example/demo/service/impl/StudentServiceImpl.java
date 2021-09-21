@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -130,6 +131,13 @@ public class StudentServiceImpl implements StudentService {
         logger.info("student updated successfully");
         StudentResponseModel studentResponseModel = modelMapper.map(entity, StudentResponseModel.class);
         return new ResponseModel<>(HttpStatus.OK, "Student updated successfully", null, studentResponseModel);
+    }
+
+    @Override
+    public ResponseModel<List<StudentResponseModel>> getStudentsForRollNumbers(Set<Integer> rollNumbers) {
+        List<StudentEntity> students = studentRepository.findStudentsByRollNo(rollNumbers);
+        List<StudentResponseModel> studentsResponse = generateListOfStudentsResponse(students.size() - 1, students);
+        return new ResponseModel<>(HttpStatus.OK, "Students retrieved successfully", null, studentsResponse);
     }
 
     /**

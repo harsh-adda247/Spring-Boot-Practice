@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,6 +21,8 @@ public class ExamEntity implements Serializable {
 
     @Column(nullable = false, unique = true)
     private Integer examId;
+
+    private Integer examCategory;
 
     private String startDate;
 

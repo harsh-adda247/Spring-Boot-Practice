@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/student")
@@ -62,6 +63,12 @@ public class StudentController {
     @PutMapping("/update")
     public ResponseEntity<ResponseModel<?>> updateStudent(@Valid @RequestBody StudentRequestModel studentRequestModel) {
         ResponseModel<StudentResponseModel> responseModel = studentService.updateStudent(studentRequestModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.valueOf(responseModel.getStatus()));
+    }
+
+    @GetMapping("/students/roll-numbers")
+    public ResponseEntity<ResponseModel<?>> getStudentsForRollNo(@RequestParam Set<Integer> rollNumbers) {
+        ResponseModel<?> responseModel = studentService.getStudentsForRollNumbers(rollNumbers);
         return new ResponseEntity<>(responseModel, HttpStatus.valueOf(responseModel.getStatus()));
     }
 }

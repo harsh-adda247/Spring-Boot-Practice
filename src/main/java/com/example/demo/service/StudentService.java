@@ -5,6 +5,7 @@ import com.example.demo.responseModel.ResponseModel;
 import com.example.demo.responseModel.StudentResponseModel;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface StudentService {
@@ -49,4 +50,11 @@ public interface StudentService {
      * @return
      */
     ResponseModel<StudentResponseModel> updateStudent(StudentRequestModel studentRequestModel);
+
+    /**
+     * method to return list of students for the provided roll numbers
+     * @param rollNumbers
+     * @return
+     */
+    ResponseModel<List<StudentResponseModel>> getStudentsForRollNumbers(Set<Integer> rollNumbers);
 }

@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidOptions {
 
-    String message() default "Invalid options - options in total must be 4 and one of them should be the answer";
+    String message() default "Invalid options - options in total must be 4 and only one of them should be the answer";
 
     Class<?>[] groups() default {};
 
