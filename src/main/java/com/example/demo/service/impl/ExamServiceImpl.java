@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.swing.filechooser.FileSystemView;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.Scanner;
 
 @Service
@@ -58,6 +55,27 @@ public class ExamServiceImpl implements ExamService {
     }
 
     /**
+     * method to delete exam corresponding to the provided examId
+     *
+     * @param examId
+     * @return
+     */
+    @Override
+    public ResponseModel<?> deleteExam(Integer examId) {
+        logger.info("**** Inside ExamServiceImpl ==> deleteExam ****");
+        if (examId != null) {
+            int isDeleted = examRepository.deleteExamOfExamId(examId);
+            if (isDeleted == 1){
+                logger.info("exam is found and deleted successfully for examId : " + examId);
+                return new ResponseModel<>(HttpStatus.OK, "Exam deleted successfully", null, null);
+            }
+        }
+        logger.info("Couldn't delete exam because no exam found for examId : " + examId);
+        return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Couldn't delete exam due to : " +
+                "No such exam found for examId : " + examId, null, null);
+    }
+
+    /**
      * method to update and return examId count via using file mechanism
      *
      * @return
@@ -85,10 +103,7 @@ public class ExamServiceImpl implements ExamService {
     private static int readFromAndWriteIntoFile(File file) throws Exception {
         if (file.exists()) {
             Scanner sc = new Scanner(file);
-            String data = null;
-            while (sc.hasNext()) {
-                data = sc.nextLine();
-            }
+            String data = sc.nextLine();
             sc.close();
             int lastExamId = Integer.parseInt(data);
             int newExamId = lastExamId + 1;
@@ -109,8 +124,9 @@ public class ExamServiceImpl implements ExamService {
      */
     private static int writeIntoFile(File file, int examId) throws Exception {
         FileWriter fw = new FileWriter(file, true);
-        fw.write(String.valueOf(examId + "\n"));
-        fw.append(String.valueOf(""));
+        PrintWriter pw = new PrintWriter(file);         //to clear (delete) all the existing file contents
+        pw.close();
+        fw.write(String.valueOf(examId));
         fw.close();
         return examId;
     }

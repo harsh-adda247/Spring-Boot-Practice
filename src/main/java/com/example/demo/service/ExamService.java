@@ -1,10 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.requestModel.ExamRequestModel;
-import com.example.demo.requestModel.QuestionsRequestModel;
 import com.example.demo.responseModel.ResponseModel;
-
-import java.util.List;
 
 public interface ExamService {
 
@@ -15,4 +12,12 @@ public interface ExamService {
      * @return
      */
     ResponseModel<?> saveExam(ExamRequestModel examRequestModel);
+
+    /**
+     * method to delete exam corresponding to the provided examId
+     *
+     * @param examId
+     * @return
+     */
+    ResponseModel<?> deleteExam(Integer examId);
 }
