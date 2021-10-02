@@ -18,6 +18,9 @@ public class QuestionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(nullable = false, updatable = false, unique = true)
+    private Integer questionId;
+
     private Integer examId;
 
     private String question;

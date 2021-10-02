@@ -82,7 +82,7 @@ public class ExamServiceImpl implements ExamService {
      */
     private static int updateExamIdCount() {
         String directoryPath = FileSystemView.getFileSystemView().
-                getDefaultDirectory() + "/Documents/ExamId.txt";
+                getDefaultDirectory() + "/ExamId.txt";
         File examIdFile = new File(directoryPath);
         try {
             return readFromAndWriteIntoFile(examIdFile);
