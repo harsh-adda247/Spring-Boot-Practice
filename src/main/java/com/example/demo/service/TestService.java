@@ -12,10 +12,7 @@ public interface TestService {
      * method to save user performance in a particular test
      *
      * @param testRequestModel
-     * @param rollNo
-     * @param branch
      * @return
      */
-    ResponseModel<TestResponseModel> saveTest(List<TestRequestModel> testRequestModel, Integer rollNo,
-                                              String branch);
+    ResponseModel<TestResponseModel> saveTest(TestRequestModel testRequestModel);
 }

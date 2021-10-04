@@ -20,5 +20,5 @@ public class QuestionAnswerRequestModel {
     private Integer questionId;
 
     @NotBlank(message = "answer is missing or empty")
-    private Integer answer;
+    private String answer;
 }

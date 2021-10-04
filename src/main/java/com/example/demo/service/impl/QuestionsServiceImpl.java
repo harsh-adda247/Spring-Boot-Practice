@@ -36,27 +36,19 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public ResponseModel<QuestionResponseModel> saveQuestion(QuestionsRequestModel questionsRequestModel) {
         logger.info("**** Inside QuestionServiceImpl ==> saveQuestion ****");
-        List<String> list = new ArrayList<>();
-        Integer questionId = updateQuestionIdCount();
-        if (questionId == -1) {
-            logger.info("Exception occurred while reading QuestionId.txt file");
-            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Unexpected server error occurred, sorry for the inconvenience !",
-                    null, null);
+        Map<QuestionEntity, List<String>> map = mapQuestionRequestIntoEntityAndSave(questionsRequestModel);
+        if (map == null) {
+            logger.info("The response came as null while saving the question");
+            return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Couldn't save question due to bad request", null, null);
         }
-        QuestionEntity questionEntity = new QuestionEntity();
-        questionEntity.setQuestion(questionsRequestModel.getQuestion());
-        list = generateOptions(questionsRequestModel, list);
-        questionEntity.setOption1(list.get(0));
-        questionEntity.setOption2(list.get(1));
-        questionEntity.setOption3(list.get(2));
-        questionEntity.setOption4(list.get(3));
-        questionEntity.setExamId(questionsRequestModel.getExamId());
-        questionEntity.setAnswer(questionsRequestModel.getAnswer());
-        questionEntity.setQuestionId(questionId);
-        questionEntity = questionRepository.save(questionEntity);
-        logger.info("question saved successfully");
-        QuestionResponseModel response = prepareQuestionResponse(questionEntity.getQuestion(), questionEntity.getAnswer(), list);
+        QuestionResponseModel response = null;
+        Set<Map.Entry<QuestionEntity, List<String>>> entrySet = map.entrySet();
+        for (Map.Entry<QuestionEntity, List<String>> mp : entrySet) {
+            QuestionEntity questionEntity = this.questionRepository.save(mp.getKey());
+            response = prepareQuestionResponse(questionEntity.getQuestion(), questionEntity.getAnswer(), mp.getValue());
+            break;
+        }
+        logger.info("questions saved successfully");
         return new ResponseModel<QuestionResponseModel>(HttpStatus.OK, "Question saved successfully", null, response);
     }
 
@@ -69,11 +61,23 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public ResponseModel<List<QuestionResponseModel>> saveQuestions(List<QuestionsRequestModel> questionsRequestModels) {
         logger.info("**** Inside QuestionServiceImpl ==> saveQuestions() ****");
+        List<QuestionEntity> questionEntities = new ArrayList<>();
         List<QuestionResponseModel> questionsResponses = new ArrayList<>();
         for (QuestionsRequestModel question : questionsRequestModels) {
-            ResponseModel<QuestionResponseModel> responseModel = saveQuestion(question);
-            questionsResponses.add(responseModel.getResponse());
+            Map<QuestionEntity, List<String>> map = mapQuestionRequestIntoEntityAndSave(question);
+            if (map == null) {
+                logger.info("The response came as null while saving the question");
+                return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Couldn't save question due to bad request", null, null);
+            }
+            QuestionResponseModel response = null;
+            Set<Map.Entry<QuestionEntity, List<String>>> entrySet = map.entrySet();
+            for (Map.Entry<QuestionEntity, List<String>> mp : entrySet) {
+                questionEntities.add(mp.getKey());
+                response = prepareQuestionResponse(mp.getKey().getQuestion(), mp.getKey().getAnswer(), mp.getValue());
+            }
+            questionsResponses.add(response);
         }
+        this.questionRepository.saveAll(questionEntities);
         logger.info("list of questions saved successfully");
         return new ResponseModel<List<QuestionResponseModel>>(HttpStatus.OK, "Questions saved successfully", null, questionsResponses);
     }
@@ -85,7 +89,7 @@ public class QuestionsServiceImpl implements QuestionsService {
      * @param list
      * @return
      */
-    private List<String> generateOptions(QuestionsRequestModel questionsRequestModel, List<String> list) {
+    private static List<String> generateOptions(QuestionsRequestModel questionsRequestModel, List<String> list) {
         Set<Map.Entry<String, Boolean>> entrySet = questionsRequestModel.getOptions().entrySet();
         for (Map.Entry<String, Boolean> map : entrySet) {
             list.add(map.getKey());
@@ -163,5 +167,34 @@ public class QuestionsServiceImpl implements QuestionsService {
         fw.write(String.valueOf(questionId));
         fw.close();
         return questionId;
+    }
+
+    /**
+     * method to map question request model into question entity
+     *
+     * @param questionsRequestModel
+     * @return
+     */
+    private Map<QuestionEntity, List<String>> mapQuestionRequestIntoEntityAndSave(QuestionsRequestModel questionsRequestModel) {
+        logger.info("Inside QuestionServiceImpl ==> mapping question request into entity");
+        List<String> list = new ArrayList<>();
+        Integer questionId = updateQuestionIdCount();
+        if (questionId == -1) {
+            logger.info("Exception occurred while reading QuestionId.txt file");
+            return null;
+        }
+        QuestionEntity questionEntity = new QuestionEntity();
+        questionEntity.setQuestion(questionsRequestModel.getQuestion());
+        list = generateOptions(questionsRequestModel, list);
+        questionEntity.setOption1(list.get(0));
+        questionEntity.setOption2(list.get(1));
+        questionEntity.setOption3(list.get(2));
+        questionEntity.setOption4(list.get(3));
+        questionEntity.setExamId(questionsRequestModel.getExamId());
+        questionEntity.setAnswer(questionsRequestModel.getAnswer());
+        questionEntity.setQuestionId(questionId);
+        Map<QuestionEntity, List<String>> map = new HashMap<>();
+        map.put(questionEntity, list);
+        return map;
     }
 }

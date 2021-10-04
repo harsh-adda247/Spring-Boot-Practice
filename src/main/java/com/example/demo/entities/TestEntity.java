@@ -21,6 +21,8 @@ public class TestEntity {
 
     private Integer rollNo;
 
+    private String name;
+
     private Integer examId;
 
     private String branch;
