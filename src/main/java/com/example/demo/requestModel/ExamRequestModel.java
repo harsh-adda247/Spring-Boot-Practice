@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.*;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +20,9 @@ public class ExamRequestModel {
     @Min(value = 1, message = "exam category can't be less than 1")
     @Max(value = 2, message = "exam category can't be greater than 2")
     private Integer examCategory;
+
+    @NotBlank(message = "name can't be missing or empty")
+    private String name;
 
     @Null(message = "examId not allowed")
     private Integer examId;

@@ -15,9 +15,13 @@ import java.io.Serializable;
 @Entity
 @Table(name = "exams")
 public class ExamEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false, unique = true)
     private Integer examId;

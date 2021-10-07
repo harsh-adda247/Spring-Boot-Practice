@@ -39,7 +39,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public ResponseModel<TestResponseModel> saveTest(TestRequestModel testRequestModel) {
-        if(!validateRollNoAndBranch(testRequestModel.getRollNo(), testRequestModel.getBranch())){
+        if (!validateRollNoAndBranch(testRequestModel.getRollNo(), testRequestModel.getBranch())) {
             return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Roll No or branch of student missing"
                     , null, null);
         }
@@ -48,9 +48,9 @@ public class TestServiceImpl implements TestService {
         testEntity.setRollNo(testRequestModel.getRollNo());
         testEntity.setBranch(testRequestModel.getBranch());
         Integer marks = computeMarksForStudent(testRequestModel);
-        if(marks == null){
-            logger.info("Invalid examId : "+testRequestModel.getExamId());
-            return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Invalid examId : "+testRequestModel.getExamId(),
+        if (marks == null) {
+            logger.info("Invalid examId : " + testRequestModel.getExamId());
+            return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Invalid examId : " + testRequestModel.getExamId(),
                     null, null);
         }
         testEntity.setMarks(marks);
@@ -64,44 +64,45 @@ public class TestServiceImpl implements TestService {
 
     /**
      * method to validate the rollNo and branch of the student provided
+     *
      * @param rollNo
      * @param branch
      * @return
      */
-    private boolean validateRollNoAndBranch(Integer rollNo, String branch){
-        if(rollNo == null || StringUtils.isEmpty(branch)) return false;
+    private boolean validateRollNoAndBranch(Integer rollNo, String branch) {
+        if (rollNo == null || StringUtils.isEmpty(branch)) return false;
         return true;
     }
 
 
-    private Integer computeMarksForStudent(TestRequestModel testRequestModel){
-        Map<Integer, String> questionAnswers = generateQuestionAnswers(testRequestModel.getQuestionAnswers().size()-1,
-                                                        testRequestModel);
+    private Integer computeMarksForStudent(TestRequestModel testRequestModel) {
+        Map<Integer, String> questionAnswers = generateQuestionAnswers(testRequestModel.getQuestionAnswers().size() - 1,
+                testRequestModel);
         List<QuestionEntity> entities = this.questionRepository.findAllOrderByExamId(testRequestModel.getExamId());
-        if(entities == null){
-            logger.info("No questions found for examId : "+testRequestModel.getExamId());
+        if (entities == null) {
+            logger.info("No questions found for examId : " + testRequestModel.getExamId());
             return null;
         }
         Set<Map.Entry<Integer, String>> entrySet = questionAnswers.entrySet();
         Integer counter = 0, index = 0;
-        for(Map.Entry<Integer, String> map: entrySet){
-            if(map.getKey() == entities.get(index).getQuestionId()){
-                if(map.getValue().equals(entities.get(index).getAnswer())) counter += 1;
+        for (Map.Entry<Integer, String> map : entrySet) {
+            if (map.getKey() == entities.get(index).getQuestionId()) {
+                if (map.getValue().equals(entities.get(index).getAnswer())) counter += 1;
             }
             index += 1;
         }
         return counter;
     }
 
-    private Map<Integer, String> generateQuestionAnswers(int index, TestRequestModel testRequestModel){
+    private Map<Integer, String> generateQuestionAnswers(int index, TestRequestModel testRequestModel) {
         //Base Case
-        if(index < 0) return new HashMap<Integer, String>();
+        if (index < 0) return new HashMap<Integer, String>();
         //faith
         Map<Integer, String> questionAnswers = generateQuestionAnswers(index - 1, testRequestModel);
         //faith * expectations
         QuestionAnswerRequestModel questionAnswer = testRequestModel.getQuestionAnswers().get(index);
         questionAnswers.put(questionAnswer.getQuestionId(), questionAnswer.getAnswer());
-        return  questionAnswers;
+        return questionAnswers;
     }
 
 }

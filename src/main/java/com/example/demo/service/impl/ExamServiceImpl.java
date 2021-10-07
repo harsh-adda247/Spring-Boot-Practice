@@ -48,10 +48,10 @@ public class ExamServiceImpl implements ExamService {
         }
         examRequestModel.setExamId(examId);
         ExamEntity examEntity = modelMapper.map(examRequestModel, ExamEntity.class);
+        examEntity.setName(examRequestModel.getName() + " "+ examId);
         examEntity = examRepository.save(examEntity);
         logger.info("exam saved successfully");
-        return new ResponseModel<>(HttpStatus.OK, "exam saved successfully for examId : "
-                + examEntity.getExamId(), null, null);
+        return new ResponseModel<>(HttpStatus.OK, "exam saved successfully : "+examEntity.getName(), null, null);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ExamServiceImpl implements ExamService {
         logger.info("**** Inside ExamServiceImpl ==> deleteExam ****");
         if (examId != null) {
             int isDeleted = examRepository.deleteExamOfExamId(examId);
-            if (isDeleted == 1){
+            if (isDeleted == 1) {
                 logger.info("exam is found and deleted successfully for examId : " + examId);
                 return new ResponseModel<>(HttpStatus.OK, "Exam deleted successfully", null, null);
             }

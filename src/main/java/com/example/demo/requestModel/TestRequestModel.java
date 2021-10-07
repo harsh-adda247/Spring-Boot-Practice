@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +27,7 @@ public class TestRequestModel implements Serializable {
 
     @NotNull(message = "exam id can't be missing or empty")
     private Integer examId;
+
 
     private List<QuestionAnswerRequestModel> questionAnswers;
 }
