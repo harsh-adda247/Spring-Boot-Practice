@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface TestRepository extends JpaRepository<TestEntity, Integer> {
 
-    @Query(value = "select *from exam_test where exam_id=:examId order by marks desc limit 10",
+    @Query(value = "select *from exam_test where exam_id=:examId order by marks desc limit 5",
             nativeQuery = true)
     public List<TestEntity> getLeaderboardForExam(Integer examId);
 
     @Query(value = "select *from exam_test where exam_id=:examId and branch=:branch order by marks desc " +
-            "limit 10", nativeQuery = true)
+            "limit 5", nativeQuery = true)
     public List<TestEntity> getLeaderboardForExamAndBranch(Integer examId, String branch);
 }

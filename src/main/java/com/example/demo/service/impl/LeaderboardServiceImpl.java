@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +36,18 @@ public class LeaderboardServiceImpl implements LeaderboardService {
      * method to fetch leaderboard for an exam regardless of the branch
      *
      * @param leaderboardRequestModel
-     * @return
+     * @returnd
      */
     @Override
     public ResponseModel<List<LeaderboardResponseModel>> fetchLeaderboardForExam(LeaderboardRequestModel leaderboardRequestModel) {
+        logger.info("Inside LeaderboardServiceImpl ==> fetchLeaderboardForExam()");
         List<TestEntity> testEntities = testRepository.getLeaderboardForExam(leaderboardRequestModel.getExamId());
-        if (testEntities == null) {
-            logger.info("");
+        if (testEntities == null || testEntities.size() == 0) {
+            logger.info("No leaderboard found for examId : "+leaderboardRequestModel.getExamId());
             return new ResponseModel<>(HttpStatus.BAD_REQUEST, "No leaderboard found for the exam id :" + leaderboardRequestModel.getExamId(),
                     null, null);
         }
+        logger.info("leaderboard found successfully");
         List<LeaderboardResponseModel> response = convertEntityIntoResponse(testEntities);
         return new ResponseModel<>(HttpStatus.OK, "Leaderboard retrieved successfully", null, response);
     }
@@ -57,13 +60,19 @@ public class LeaderboardServiceImpl implements LeaderboardService {
      */
     @Override
     public ResponseModel<List<LeaderboardResponseModel>> fetchLeaderboardForExamAndBranch(LeaderboardRequestModel leaderboardRequestModel) {
+        logger.info("Inside LeaderboardServiceImpl ==> fetchLeaderboardForExamAndBranch()");
+        if(StringUtils.isEmpty(leaderboardRequestModel.getBranch())){
+            logger.info("Error : Branch is either null or empty, couldn't proceed further");
+            return new ResponseModel<>(HttpStatus.BAD_REQUEST, "Branch can't be missing or empty", "Validation Error", null);
+        }
         List<TestEntity> testEntities = testRepository.getLeaderboardForExamAndBranch(leaderboardRequestModel.getExamId(),
                 leaderboardRequestModel.getBranch());
-        if (testEntities == null) {
-            logger.info("");
+        if (testEntities == null || testEntities.size() == 0) {
+            logger.info("No leaderboard found for examId : "+leaderboardRequestModel.getExamId());
             return new ResponseModel<>(HttpStatus.BAD_REQUEST, "No leaderboard found for the exam id :" + leaderboardRequestModel.getExamId(),
                     null, null);
         }
+        logger.info("leaderboard found successfully");
         List<LeaderboardResponseModel> response = convertEntityIntoResponse(testEntities);
         return new ResponseModel<>(HttpStatus.OK, "Leaderboard retrieved successfully", null, response);
     }

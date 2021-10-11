@@ -1,5 +1,6 @@
 package com.example.demo.requestModel;
 
+import com.example.demo.validation.ValidQuestionAnswers;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,6 @@ public class TestRequestModel implements Serializable {
     @NotNull(message = "exam id can't be missing or empty")
     private Integer examId;
 
-
+    @ValidQuestionAnswers
     private List<QuestionAnswerRequestModel> questionAnswers;
 }
