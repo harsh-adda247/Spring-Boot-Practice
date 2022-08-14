@@ -59,4 +59,12 @@ public class StudentEntity {
                 ", branch='" + branch + '\'' +
                 '}';
     }
+
+    public StudentEntity(Integer id, Integer rollNo) {
+        this.id = id;
+        this.rollNo = rollNo;
+    }
+
+    public StudentEntity() {
+    }
 }

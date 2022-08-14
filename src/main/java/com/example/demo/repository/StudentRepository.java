@@ -19,4 +19,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Integer>
     @Query(value = "select * from student where roll_no in :rollNums", nativeQuery = true)
     List<StudentEntity> findStudentsByRollNo(@Param("rollNums") Set<Integer> rollNumbers);
 
+
+    @Query(value = "select id from student where roll_no in :rollNums order by id asc", nativeQuery = true)
+    List<Integer> findIdsByRollNo(@Param("rollNums") List<Integer> rollNumbers);
 }
